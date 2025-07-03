@@ -1,31 +1,42 @@
--- Drop the 'DataWarehouse' database if it exists
-DROP DATABASE IF EXISTS DataWarehouse;
+/*
+=============================================================
+Create Database and Schemas
+=============================================================
+Script Purpose:
+    This script creates a new database named 'DataWarehouse' after checking if it already exists. 
+    If the database exists, it is dropped and recreated. Additionally, the script sets up three schemas 
+    within the database: 'bronze', 'silver', and 'gold'.
+	
+WARNING:
+    Running this script will drop the entire 'DataWarehouse' database if it exists. 
+    All data in the database will be permanently deleted. Proceed with caution 
+    and ensure you have proper backups before running this script.
+*/
+
+USE master;
+GO
+
+-- Drop and recreate the 'DataWarehouse' database
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    ALTER DATABASE DataWarehouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE DataWarehouse;
+END;
+GO
 
 -- Create the 'DataWarehouse' database
 CREATE DATABASE DataWarehouse;
+GO
 
--- Use the newly created database
 USE DataWarehouse;
+GO
 
--- Simulate 'schemas' using naming conventions
--- Create tables or organize via naming, since MySQL treats SCHEMA = DATABASE
+-- Create Schemas
+CREATE SCHEMA bronze;
+GO
 
--- Example: Create a table in the 'bronze' layer
-CREATE TABLE bronze_orders (
-    id INT PRIMARY KEY,
-    raw_data TEXT
-);
+CREATE SCHEMA silver;
+GO
 
--- Example: Create a table in the 'silver' layer
-CREATE TABLE silver_orders (
-    id INT PRIMARY KEY,
-    cleaned_data TEXT
-);
-
--- Example: Create a table in the 'gold' layer
-CREATE TABLE gold_orders (
-    id INT PRIMARY KEY,
-    enriched_data TEXT
-);
-
-
+CREATE SCHEMA gold;
+GO
